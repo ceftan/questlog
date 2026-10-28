@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css">
+         <title>Система прокачки</title>
+    </head>
+    <body>
+        <header>
+        </header>
+        <main>
+            <section id="progress">
+            <h2>Мой ранг:<span id="rank"></span></h2>
+            <p>Количество опыта: <span id="xp_display"></span> </p>
+            <button id="btn_export">Экспорт прогресса</button>
+            <input type="file" id="import_file" accept=".json" hidden>
+            <button id="btn_import">Импорт прогресса</button>
+            </section>
+
+            <section id="daily_quests">
+            <h2>Ежедневные квесты:</h2>
+            <ul id="daily_quests_list">
+            </ul>
+             <input id="add_daily_quest" type="text" placeholder="Новый ежедневный квест">
+             <input id="exp_daily_quest" type="number" placeholder="Количество опыта за квест">
+            <button id="add_daily_quest_btn">Добавить ежедневный квест</button>
+            </section>
+
+            <section id="quests">
+            <h2>Квесты:</h2>
+            <ul id="quests_list">
+            </ul>
+            <input id="add_quest" type="text" placeholder="Новый квест">
+            <input id="exp_quest" type="number" placeholder="Количество опыта за квест">
+            <button id="add_quest_btn">Добавить обычный квест</button>
+            </section>
+        </main>
+        <footer><a target="_blank" href="https://github.com/ceftan/rank-system">Репозиторий на GitHub</a></footer>
+    <script src="script.js"></script>
+    </body>
+</html>

@@ -1,0 +1,37 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+main{
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 0;
+    min-height: 100dvh;
+    min-width: 85%;
+     font-family:sans-serif;
+}
+footer{
+    min-height: 60px;
+    background-color: black;
+}
+header{
+    min-height: 60px;
+    background-color: black;
+    max-width: 100%;
+    margin: 0;
+}
+body{
+    color: white;
+    background-color: grey;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    margin: 0;
+}
+a{
+    color: white;
+    text-decoration: none;
+}
+a:visited{
+    color: white;
+}
