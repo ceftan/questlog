@@ -33,12 +33,7 @@ body{
     margin: 0;
     font-size: 1em; 
 }
-@media(max-width:500px){
 
-body{
-    font-size: 26px;
-}
-}
 a{
     color: white;
     text-decoration: none;
