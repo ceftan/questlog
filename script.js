@@ -182,7 +182,7 @@ btn_quest.addEventListener('click', function () {
 	if (!text_quest) return;
 	if (!exp) return;
 	if(exp<0){
-        exp_daily_quest.value = '';
+        exp_quest.value = '';
 		return;
 	}
 	add_task(text_quest, 'quest', exp)
