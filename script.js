@@ -26,15 +26,35 @@ let tasks = [] // массив объектов: { text, type, xp, done }
 // =============================================
 //Обработчик для общих рангов
 function get_rank(xp) {
-	if (xp >= 100) return 'Продвинутый новичок'
-	return 'Новичок'
-}
+if (xp >= 27000) return {name:"Легенда ",place:"1",type:"legend"}
+if (xp >= 22000) return {name:"Легенда ",place:"2",type:"legend"}
+if (xp >= 18000) return {name:"Легенда ",place:"3",type:"legend"}
 
+if (xp >= 14500) return {name:"Алмаз ",place:"1",type:"diamond"}
+if (xp >= 11500) return {name:"Алмаз ",place:"2",type:"diamond"}
+if (xp >= 9000) return {name:"Алмаз ",place:"3",type:"diamond"}
+
+if (xp >= 7000) return {name:"Платина ",place:"1",type:"platinum"}
+if (xp >= 5500) return {name:"Платина ",place:"2",type:"platinum"}
+if (xp >= 4300) return {name:"Платина ",place:"3",type:"platinum"}
+
+if (xp >= 3300) return {name:"Золото ",place:"1",type:"gold"}
+if (xp >= 2500) return {name:"Золото ",place:"2",type:"gold"}
+if (xp >= 1800) return {name:"Золото ",place:"3",type:"gold"}
+
+if (xp >= 1200) return {name:"Серебро ",place:"1",type:"silver"}
+if (xp >= 800) return {name:"Серебро ",place:"2",type:"silver"}
+if (xp >= 500) return {name:"Серебро ",place:"3",type:"silver"}
+
+if (xp >= 250) return {name:"Бронза ",place:"1",type:"bronze"}
+	if (xp >= 100) return {name:"Бронза ",place:"2",type:"bronze"}
+	if (xp < 100) return {name:"Бронза ",place:"3",type:"bronze"}
+}
 //Функция для обновления опыта и ранга
 function update_progress() {
 	xp_display.textContent = xp
-	rank_display.textContent = get_rank(xp);
-}
+	rank_display.textContent = (get_rank(xp).name + " " +  get_rank(xp).place);
+		}
 
 //Сохранение в localstorage задач и опыта 
 function save_data_l() {
