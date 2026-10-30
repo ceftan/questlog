@@ -163,7 +163,7 @@ btn_daily_quest.addEventListener('click', function () {
 	const exp = Number(exp_daily_quest.value);
 	if (!text_quest) return;
 	if (!exp) return;
-	else if(exp<0){
+	if(exp<0){
         exp_daily_quest.value = '';
 		return;
 	}
@@ -181,7 +181,7 @@ btn_quest.addEventListener('click', function () {
 	const exp = Number(exp_quest.value)
 	if (!text_quest) return;
 	if (!exp) return;
-	else if(exp<0){
+	if(exp<0){
         exp_daily_quest.value = '';
 		return;
 	}
