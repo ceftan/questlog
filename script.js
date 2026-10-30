@@ -162,7 +162,11 @@ btn_daily_quest.addEventListener('click', function () {
 	const text_quest = input_daily_quest.value.trim()
 	const exp = Number(exp_daily_quest.value);
 	if (!text_quest) return;
-	else if (!exp) return;
+	if (!exp) return;
+	else if(exp<0){
+        alert("Введите число >= 0");
+		return;
+	}
 	add_task(text_quest,"daily",exp);
 	input_daily_quest.value = ''
 	exp_daily_quest.value = ''
@@ -176,7 +180,11 @@ btn_quest.addEventListener('click', function () {
 	const text_quest = input_quest.value.trim()
 	const exp = Number(exp_quest.value)
 	if (!text_quest) return;
-	else if (!exp) return;
+	if (!exp) return;
+	else if(exp<0){
+        alert("Введите число >= 0");
+		return;
+	}
 	add_task(text_quest, 'quest', exp)
 	input_quest.value = ''
 	exp_quest.value = ''
