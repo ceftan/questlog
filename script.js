@@ -164,7 +164,7 @@ btn_daily_quest.addEventListener('click', function () {
 	if (!text_quest) return;
 	if (!exp) return;
 	else if(exp<0){
-        alert("Введите число >= 0");
+        exp_daily_quest.value = '';
 		return;
 	}
 	add_task(text_quest,"daily",exp);
@@ -182,7 +182,7 @@ btn_quest.addEventListener('click', function () {
 	if (!text_quest) return;
 	if (!exp) return;
 	else if(exp<0){
-        alert("Введите число >= 0");
+        exp_daily_quest.value = '';
 		return;
 	}
 	add_task(text_quest, 'quest', exp)
