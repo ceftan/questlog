@@ -1,97 +1,181 @@
-
-//доступы
-const input_daily_quest = document.querySelector("#add_daily_quest");
-const input_quest = document.querySelector("#add_quest");
-const list_daily_quest = document.querySelector("#daily_quests_list");
-const list_quest = document.querySelector("#quests_list");
-const btn_daily_quest = document.querySelector("#add_daily_quest_btn");
-const btn_quest = document.querySelector("#add_quest_btn");
-const rank_display = document.querySelector('#rank');
-const btn_import = document.querySelector("#btn_import")
+// =============================================
+//ДАННЫЕ И DOM
+// =============================================
+//DOM
+const input_daily_quest = document.querySelector('#add_daily_quest')
+const input_quest = document.querySelector('#add_quest')
+const list_daily_quest = document.querySelector('#daily_quests_list')
+const list_quest = document.querySelector('#quests_list')
+const btn_daily_quest = document.querySelector('#add_daily_quest_btn')
+const btn_quest = document.querySelector('#add_quest_btn')
+const rank_display = document.querySelector('#rank')
+const btn_import = document.querySelector('#btn_import')
 const btn_export = document.querySelector('#btn_export')
-const import_file = document.querySelector("#import_file");
-const exp_quest = document.querySelector("#exp_quest");
+const import_file = document.querySelector('#import_file')
+const exp_quest = document.querySelector('#exp_quest')
 const exp_daily_quest = document.querySelector('#exp_daily_quest')
+const xp_display = document.querySelector('#xp_display')
+//данные
+let xp = 0
+let tasks = [] // массив объектов: { text, type, xp, done }
+// =============================================
+// =============================================
 
-//общий опыт и ранг
-let xp = Number(localStorage.getItem("xp")) || 0;
-const xp_quantity = document.querySelector("#xp_display");
-xp_quantity.textContent = xp;
-rank_display.textContent = get_rank(xp);
+// =============================================
+// РАЗНЫЕ ОБРАБОТЧИКИ И ФУНКЦИИ
+// =============================================
+//Обработчик для общих рангов
+function get_rank(xp) {
+	if (xp >= 100) return 'Продвинутый новичок'
+	return 'Новичок'
+}
 
-//*Кнопки добавления квестов* 
-//Для ежедневного квеста 
-btn_daily_quest.addEventListener("click", function(){
- const text_quest = input_daily_quest.value.trim();
-   if (text_quest !== '') {
-			const new_quest = document.createElement('li')
+//Функция для обновления опыта и ранга
+function update_progress() {
+	xp_display.textContent = xp
+	rank_display.textContent = get_rank(xp);
+}
 
-			const check_quest = document.createElement('input')
-			check_quest.type = 'checkbox'
-			let text = document.createElement('span')
-			text.textContent = (text_quest + " Награда: " + exp_daily_quest.value + " опыта");
-
-			new_quest.appendChild(text);
-			new_quest.appendChild(check_quest);
-			const exp_for_quest = Number(exp_daily_quest.value);
-
-			check_quest.addEventListener("change", function(){
-				if (check_quest.checked) {
-					xp = xp + exp_for_quest
-				} else {
-					xp = xp - exp_for_quest
-				}
-				xp_quantity.textContent = xp;
-				rank_display.textContent = get_rank(xp)
-				localStorage.setItem('xp', xp)
-			});
-
-			list_daily_quest.appendChild(new_quest);
-
-			input_daily_quest.value = '';
-			exp_daily_quest.value = ''
-		}
-});
-
-//Для обычного квеста 
-btn_quest.addEventListener('click', function () {
-	const text_quest = input_quest.value.trim();
-	if (text_quest !== '') {
-			const new_quest = document.createElement('li');
-
-			const check_quest = document.createElement('input');
-			check_quest.type = 'checkbox';
-			let text = document.createElement('span');
-			text.textContent = (text_quest + ' Награда: ' + exp_quest.value + ' опыта');
-
-			new_quest.appendChild(text);
-			new_quest.appendChild(check_quest);
-			const exp_for_quest = Number(exp_quest.value);
-
-			check_quest.addEventListener('change', function () {
-				if (check_quest.checked) {
-					xp = xp + exp_for_quest
-				} else {
-					xp = xp - exp_for_quest
-				}
-				xp_quantity.textContent = xp
-				rank_display.textContent = get_rank(xp)
-				localStorage.setItem('xp', xp)
-			});
+//Сохранение в localstorage задач и опыта 
+function save_data_l() {
+	localStorage.setItem("xp",xp);
+	localStorage.setItem("tasks",JSON.stringify(tasks));
+}
+//Загрузка из localstorage
+function load_data_l (){
+	xp = Number(localStorage.getItem('xp')) || 0;
+	const raw = localStorage.getItem("tasks");
+	tasks = raw ? JSON.parse(raw) : [];
+}
+//Функция для отрисовки задач
+function render_quest(type){
+	list_daily_quest.innerHTML = ''
+	list_quest.innerHTML = ''
+	
+	tasks.forEach((task, index) => {
 		
-		list_quest.appendChild(new_quest);
+		if(task.type === "daily"){
+		
+		const item = document.createElement('li')
+		const label = document.createElement('span')
+		const checkbox = document.createElement('input')
 
-		input_quest.value = '';
-		exp_quest.value = "";
+		checkbox.type = 'checkbox'
+		label.textContent = (task.text + ". Награда: "+task.xp+" опыта")
+		checkbox.value = task.done
+		checkbox.checked = JSON.parse(task.done)
+
+		item.appendChild(label)
+		item.appendChild(checkbox)
+		list_daily_quest.appendChild(item)
+		
+		
+		checkbox.addEventListener('change', function () {
+			task.done = checkbox.checked;
+			if (checkbox.checked == true) {
+				xp += Number(task.xp)
+			} else if (checkbox.checked == false) {
+				xp -= Number(task.xp)
+			}
+			update_progress()
+			save_data_l()
+		})
 	}
+	else if (task.type === 'quest') {
+		
+		const item = document.createElement('li')
+		const label = document.createElement('span')
+		const checkbox = document.createElement('input')
+
+		checkbox.type = 'checkbox'
+		label.textContent = (task.text + '. Награда: ' + task.xp + ' опыта')
+		checkbox.checked = JSON.parse(task.done);
+
+		item.appendChild(label)
+		item.appendChild(checkbox)
+		list_quest.appendChild(item)
+
+		checkbox.addEventListener('change', function () {
+			task.done = checkbox.checked;
+			if (checkbox.checked == true) {
+				xp += Number(task.xp)
+			} else if (checkbox.checked == false) {
+				xp -= Number(task.xp)
+			}
+			update_progress()
+			save_data_l()
+		})
+	}
+		else return;
+	})
+
+
+	update_progress();
+	save_data_l();
+}
+
+
+//Функция для вызова отрисовки всех задач
+function render_all_quest(){
+	render_quest("daily")
+	render_quest("quest")
+}
+//Функция для добавления задачи 
+function add_task(text,type,xp){
+	tasks.push({
+		text: text,
+		type: type,
+		xp: xp,
+		done:false
+	})
+	save_data_l();
+	render_all_quest;
+}
+// =============================================
+// =============================================
+
+// =============================================
+//КНОПКИ ДЛЯ ДОБАВЛЕНИЯ КВЕСТОВ
+// =============================================
+//Для ежедневного квеста
+btn_daily_quest.addEventListener('click', function () {
+	const text_quest = input_daily_quest.value.trim()
+	const exp = Number(exp_daily_quest.value);
+	if (!text_quest) return;
+	else if (!exp) return;
+	add_task(text_quest,"daily",exp);
+	input_daily_quest.value = ''
+	exp_daily_quest.value = ''
+	render_all_quest()
+	update_progress()
+	save_data_l()
 })
 
-//**Кнопки импорта и экспорта  прогресса** 
+//Для обычного квеста
+btn_quest.addEventListener('click', function () {
+	const text_quest = input_quest.value.trim()
+	const exp = Number(exp_quest.value)
+	if (!text_quest) return;
+	else if (!exp) return;
+	add_task(text_quest, 'quest', exp)
+	input_quest.value = ''
+	exp_quest.value = ''
+	render_all_quest()
+	update_progress()
+	save_data_l()
+})
+// =============================================
+// =============================================
+
+// =============================================
+//КНОПКИ ИМПОРТА И ЭКСПОРТА ПРОГРЕССА
+// =============================================
 //Экспорт
 btn_export.addEventListener('click', function () {
 	//Создаем объект с данными, которые надо сохранить.
 	const data = {
 		xp: xp,
+		task: tasks
 	}
 	//Преобразуем их в JSON-строку.
 	const json = JSON.stringify(data, null, 2)
@@ -105,34 +189,37 @@ btn_export.addEventListener('click', function () {
 	link.download = 'progress.json'
 	link.click()
 	URL.revokeObjectURL(url)
-});
+})
 
 //Импорт
-btn_import.addEventListener("click", function(){
-import_file.click();
-import_file.addEventListener("change", function(){
-	const file = import_file.files[0];
-	if(!file) return;
+btn_import.addEventListener('click', function () {
+	import_file.click()
+})
+	import_file.addEventListener('change', function () {
+		const file = import_file.files[0]
+		if (!file) return
 
-	const reader = new FileReader();
+		const reader = new FileReader()
 
-	reader.onload = function(){
-		const data = JSON.parse(reader.result);
-		
-		xp = Number(data.xp) || 0;
-		xp_quantity.textContent = xp;
-		rank_display.textContent = get_rank(xp);
-		localStorage.setItem("xp",xp);
+		reader.onload = function () {
+			const data = JSON.parse(reader.result)
 
-	}
-	reader.readAsText(file);
-	import_file.value = "";
-});
-});
+			xp = Number(data.xp) || 0
+			tasks = Array.isArray(data.task) ? data.task : [];		
+			
+			render_all_quest();
+			update_progress();
+			save_data_l();
+		}
+		reader.readAsText(file)
+		import_file.value = ''
+	})
+// =============================================
+// =============================================
 
-
-//Обработчик для общих рангов
-function get_rank(xp){
-	if(xp>=30) return "Продвинутый новичок";
-	return "Новичок";
-}
+// =============================================
+//СТАРТ
+// =============================================
+load_data_l();
+update_progress();
+render_all_quest();
