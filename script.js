@@ -15,6 +15,7 @@ const import_file = document.querySelector('#import_file')
 const exp_quest = document.querySelector('#exp_quest')
 const exp_daily_quest = document.querySelector('#exp_daily_quest')
 const xp_display = document.querySelector('#xp_display')
+const list_complete_quest = document.querySelector("#complete_quests_list")
 //данные
 let xp = 0
 let tasks = [] // массив объектов: { text, type, xp, done }
@@ -26,130 +27,136 @@ let tasks = [] // массив объектов: { text, type, xp, done }
 // =============================================
 //Обработчик для общих рангов
 function get_rank(xp) {
-if (xp >= 27000) return {name:"Легенда ",place:"1",type:"legend"}
-if (xp >= 22000) return {name:"Легенда ",place:"2",type:"legend"}
-if (xp >= 18000) return {name:"Легенда ",place:"3",type:"legend"}
+	if (xp >= 27000) return { name: 'Легенда ', place: '1', type: 'legend' }
+	if (xp >= 22000) return { name: 'Легенда ', place: '2', type: 'legend' }
+	if (xp >= 18000) return { name: 'Легенда ', place: '3', type: 'legend' }
 
-if (xp >= 14500) return {name:"Алмаз ",place:"1",type:"diamond"}
-if (xp >= 11500) return {name:"Алмаз ",place:"2",type:"diamond"}
-if (xp >= 9000) return {name:"Алмаз ",place:"3",type:"diamond"}
+	if (xp >= 14500) return { name: 'Алмаз ', place: '1', type: 'diamond' }
+	if (xp >= 11500) return { name: 'Алмаз ', place: '2', type: 'diamond' }
+	if (xp >= 9000) return { name: 'Алмаз ', place: '3', type: 'diamond' }
 
-if (xp >= 7000) return {name:"Платина ",place:"1",type:"platinum"}
-if (xp >= 5500) return {name:"Платина ",place:"2",type:"platinum"}
-if (xp >= 4300) return {name:"Платина ",place:"3",type:"platinum"}
+	if (xp >= 7000) return { name: 'Платина ', place: '1', type: 'platinum' }
+	if (xp >= 5500) return { name: 'Платина ', place: '2', type: 'platinum' }
+	if (xp >= 4300) return { name: 'Платина ', place: '3', type: 'platinum' }
 
-if (xp >= 3300) return {name:"Золото ",place:"1",type:"gold"}
-if (xp >= 2500) return {name:"Золото ",place:"2",type:"gold"}
-if (xp >= 1800) return {name:"Золото ",place:"3",type:"gold"}
+	if (xp >= 3300) return { name: 'Золото ', place: '1', type: 'gold' }
+	if (xp >= 2500) return { name: 'Золото ', place: '2', type: 'gold' }
+	if (xp >= 1800) return { name: 'Золото ', place: '3', type: 'gold' }
 
-if (xp >= 1200) return {name:"Серебро ",place:"1",type:"silver"}
-if (xp >= 800) return {name:"Серебро ",place:"2",type:"silver"}
-if (xp >= 500) return {name:"Серебро ",place:"3",type:"silver"}
+	if (xp >= 1200) return { name: 'Серебро ', place: '1', type: 'silver' }
+	if (xp >= 800) return { name: 'Серебро ', place: '2', type: 'silver' }
+	if (xp >= 500) return { name: 'Серебро ', place: '3', type: 'silver' }
 
-if (xp >= 250) return {name:"Бронза ",place:"1",type:"bronze"}
-	if (xp >= 100) return {name:"Бронза ",place:"2",type:"bronze"}
-	if (xp < 100) return {name:"Бронза ",place:"3",type:"bronze"}
+	if (xp >= 250) return { name: 'Бронза ', place: '1', type: 'bronze' }
+	if (xp >= 100) return { name: 'Бронза ', place: '2', type: 'bronze' }
+	if (xp < 100) return { name: 'Бронза ', place: '3', type: 'bronze' }
 }
 //Функция для обновления опыта и ранга
 function update_progress() {
 	xp_display.textContent = xp
-	rank_display.textContent = (get_rank(xp).name + " " +  get_rank(xp).place);
-		}
+	rank_display.textContent = get_rank(xp).name + ' ' + get_rank(xp).place
+}
 
-//Сохранение в localstorage задач и опыта 
+//Сохранение в localstorage задач и опыта
 function save_data_l() {
-	localStorage.setItem("xp",xp);
-	localStorage.setItem("tasks",JSON.stringify(tasks));
+	localStorage.setItem('xp', xp)
+	localStorage.setItem('tasks', JSON.stringify(tasks))
 }
 //Загрузка из localstorage
-function load_data_l (){
-	xp = Number(localStorage.getItem('xp')) || 0;
-	const raw = localStorage.getItem("tasks");
-	tasks = raw ? JSON.parse(raw) : [];
+function load_data_l() {
+	xp = Number(localStorage.getItem('xp')) || 0
+	const raw = localStorage.getItem('tasks')
+	tasks = raw ? JSON.parse(raw) : []
 }
 //Функция для отрисовки задач
-function render_quest(type){
+function render_quest(type) {
 	list_daily_quest.innerHTML = ''
 	list_quest.innerHTML = ''
-	
+	list_complete_quest.innerHTML = ''
+
 	tasks.forEach((task, index) => {
-		
-		if(task.type === "daily"){
-		
-		const item = document.createElement('li')
-		const label = document.createElement('span')
-		const checkbox = document.createElement('input')
+		if (task.type === 'daily') {
+			const item = document.createElement('li')
+			const checkbox = document.createElement('input')
 
-		checkbox.type = 'checkbox'
-		label.textContent = (task.text + ". Награда: "+task.xp+" опыта")
-		checkbox.value = task.done
-		checkbox.checked = JSON.parse(task.done)
-
-		item.appendChild(label)
-		item.appendChild(checkbox)
-		list_daily_quest.appendChild(item)
-		
-		
-		checkbox.addEventListener('change', function () {
-			task.done = checkbox.checked;
-			if (checkbox.checked == true) {
-				xp += Number(task.xp)
-			} else if (checkbox.checked == false) {
-				xp -= Number(task.xp)
+			checkbox.type = 'checkbox'
+			checkbox.value = task.done
+			checkbox.checked = JSON.parse(task.done)
+			if(JSON.parse(task.done)){
+				const label = document.createElement('s')
+				label.textContent = task.text + '. Награда: ' + task.xp + ' опыта'
+				item.appendChild(label)
 			}
-			update_progress()
-			save_data_l()
-		})
-	}
-	else if (task.type === 'quest') {
-		
-		const item = document.createElement('li')
-		const label = document.createElement('span')
-		const checkbox = document.createElement('input')
-
-		checkbox.type = 'checkbox'
-		label.textContent = (task.text + '. Награда: ' + task.xp + ' опыта')
-		checkbox.checked = JSON.parse(task.done);
-
-		item.appendChild(label)
-		item.appendChild(checkbox)
-		list_quest.appendChild(item)
-
-		checkbox.addEventListener('change', function () {
-			task.done = checkbox.checked;
-			if (checkbox.checked == true) {
-				xp += Number(task.xp)
-			} else if (checkbox.checked == false) {
-				xp -= Number(task.xp)
+			if (JSON.parse(task.done)===false){
+				const label = document.createElement('span')
+			label.textContent = task.text + '. Награда: ' + task.xp + ' опыта'
+			item.appendChild(label)
 			}
-			update_progress()
-			save_data_l()
-		})
-	}
-		else return;
+			item.appendChild(checkbox)
+			list_daily_quest.appendChild(item)
+
+			checkbox.addEventListener('change', function () {
+				task.done = checkbox.checked
+				if (checkbox.checked == true) {
+					xp += Number(task.xp)
+				} else if (checkbox.checked == false) {
+					xp -= Number(task.xp)
+				}
+				update_progress()
+				save_data_l()
+			})
+		} else if (task.type === 'quest') {
+			const item = document.createElement('li')
+			const label = document.createElement('span')
+			const checkbox = document.createElement('input')
+
+			checkbox.type = 'checkbox'
+			label.textContent = task.text + '. Награда: ' + task.xp + ' опыта'
+			checkbox.checked = JSON.parse(task.done)
+
+			item.appendChild(label)
+			item.appendChild(checkbox)
+			if(JSON.parse(task.done)) list_complete_quest.appendChild(item) ;
+			if (JSON.parse(task.done)===false) list_quest.appendChild(item);
+
+			checkbox.addEventListener('change', function () {
+				task.done = checkbox.checked
+				if (checkbox.checked == true) {
+					xp += Number(task.xp)
+				} else if (checkbox.checked == false) {
+					xp -= Number(task.xp)
+				}
+				update_progress()
+				save_data_l()
+			})
+			
+
+			
+		} else return
 	})
 
-
-	update_progress();
-	save_data_l();
+	update_progress()
+	save_data_l()
 }
-
 
 //Функция для вызова отрисовки всех задач
-function render_all_quest(){
-	render_quest("daily")
-	render_quest("quest")
+function render_all_quest() {
+	render_quest('daily')
+	render_quest('quest')
 }
-//Функция для добавления задачи 
-function add_task(text,type,xp){
+rank_display.addEventListener("click",function(){
+	render_all_quest();
+})
+//Функция для добавления задачи
+function add_task(text, type, xp) {
 	tasks.push({
 		text: text,
 		type: type,
 		xp: xp,
-		done:false
+		done: false,
 	})
-	save_data_l();
-	render_all_quest;
+	save_data_l()
+	render_all_quest
 }
 // =============================================
 // =============================================
@@ -160,14 +167,14 @@ function add_task(text,type,xp){
 //Для ежедневного квеста
 btn_daily_quest.addEventListener('click', function () {
 	const text_quest = input_daily_quest.value.trim()
-	const exp = Number(exp_daily_quest.value);
-	if (!text_quest) return;
-	if (!exp) return;
-	if(exp<0){
-        exp_daily_quest.value = '';
-		return;
+	const exp = Number(exp_daily_quest.value)
+	if (!text_quest) return
+	if (!exp) return
+	if (exp < 0) {
+		exp_daily_quest.value = ''
+		return
 	}
-	add_task(text_quest,"daily",exp);
+	add_task(text_quest, 'daily', exp)
 	input_daily_quest.value = ''
 	exp_daily_quest.value = ''
 	render_all_quest()
@@ -179,11 +186,11 @@ btn_daily_quest.addEventListener('click', function () {
 btn_quest.addEventListener('click', function () {
 	const text_quest = input_quest.value.trim()
 	const exp = Number(exp_quest.value)
-	if (!text_quest) return;
-	if (!exp) return;
-	if(exp<0){
-        exp_quest.value = '';
-		return;
+	if (!text_quest) return
+	if (!exp) return
+	if (exp < 0) {
+		exp_quest.value = ''
+		return
 	}
 	add_task(text_quest, 'quest', exp)
 	input_quest.value = ''
@@ -203,7 +210,7 @@ btn_export.addEventListener('click', function () {
 	//Создаем объект с данными, которые надо сохранить.
 	const data = {
 		xp: xp,
-		task: tasks
+		task: tasks,
 	}
 	//Преобразуем их в JSON-строку.
 	const json = JSON.stringify(data, null, 2)
@@ -223,31 +230,31 @@ btn_export.addEventListener('click', function () {
 btn_import.addEventListener('click', function () {
 	import_file.click()
 })
-	import_file.addEventListener('change', function () {
-		const file = import_file.files[0]
-		if (!file) return
+import_file.addEventListener('change', function () {
+	const file = import_file.files[0]
+	if (!file) return
 
-		const reader = new FileReader()
+	const reader = new FileReader()
 
-		reader.onload = function () {
-			const data = JSON.parse(reader.result)
+	reader.onload = function () {
+		const data = JSON.parse(reader.result)
 
-			xp = Number(data.xp) || 0
-			tasks = Array.isArray(data.task) ? data.task : [];		
-			
-			render_all_quest();
-			update_progress();
-			save_data_l();
-		}
-		reader.readAsText(file)
-		import_file.value = ''
-	})
+		xp = Number(data.xp) || 0
+		tasks = Array.isArray(data.task) ? data.task : []
+
+		render_all_quest()
+		update_progress()
+		save_data_l()
+	}
+	reader.readAsText(file)
+	import_file.value = ''
+})
 // =============================================
 // =============================================
 
 // =============================================
 //СТАРТ
 // =============================================
-load_data_l();
-update_progress();
-render_all_quest();
+load_data_l()
+update_progress()
+render_all_quest()
