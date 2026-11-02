@@ -19,6 +19,41 @@ const list_complete_quest = document.querySelector("#complete_quests_list")
 //данные
 let xp = 0
 let tasks = [] // массив объектов: { text, type, xp, done }
+//Константы
+const ranks = [
+	{ text: 'Бронза 5', xp: 0, tier: 'bronze' },
+	{ text: 'Бронза 4', xp: 150, tier: 'bronze' },
+	{ text: 'Бронза 3', xp: 350, tier: 'bronze' },
+	{ text: 'Бронза 2', xp: 600, tier: 'bronze' },
+	{ text: 'Бронза 1', xp: 900, tier: 'bronze' },
+	{ text: 'Серебро 5', xp: 1300, tier: 'silver' },
+	{ text: 'Серебро 4', xp: 1800, tier: 'silver' },
+	{ text: 'Серебро 3', xp: 2400, tier: 'silver' },
+	{ text: 'Серебро 2', xp: 3100, tier: 'silver' },
+	{ text: 'Серебро 1', xp: 3900, tier: 'silver' },
+	{ text: 'Золото 5', xp: 4800, tier: 'gold' },
+	{ text: 'Золото 4', xp: 5800, tier: 'gold' },
+	{ text: 'Золото 3', xp: 7000, tier: 'gold' },
+	{ text: 'Золото 2', xp: 8400, tier: 'gold' },
+	{ text: 'Золото 1', xp: 10000, tier: 'gold' },
+	{ text: 'Платина 5', xp: 12000, tier: 'platinum' },
+	{ text: 'Платина 4', xp: 14500, tier: 'platinum' },
+	{ text: 'Платина 3', xp: 17500, tier: 'platinum' },
+	{ text: 'Платина 2', xp: 21000, tier: 'platinum' },
+	{ text: 'Платина 1', xp: 25000, tier: 'platinum' },
+	{ text: 'Алмаз 5', xp: 30000, tier: 'diamond' },
+	{ text: 'Алмаз 4', xp: 36000, tier: 'diamond' },
+	{ text: 'Алмаз 3', xp: 43000, tier: 'diamond' },
+	{ text: 'Алмаз 2', xp: 51000, tier: 'diamond' },
+	{ text: 'Алмаз 1', xp: 61000, tier: 'diamond' },
+	{ text: 'Легенда 5', xp: 73000, tier: 'legend' },
+	{ text: 'Легенда 4', xp: 87000, tier: 'legend' },
+	{ text: 'Легенда 3', xp: 10300, tier: 'legend' },
+	{ text: 'Легенда 2', xp: 12100, tier: 'legend' },
+	{ text: 'Легенда 1', xp: 142000, tier: 'legend' },
+	{ text: 'Звёздный лорд', xp: 165000, tier: 'star_lord' }
+]
+const exp_star = 5000;
 // =============================================
 // =============================================
 
@@ -27,34 +62,23 @@ let tasks = [] // массив объектов: { text, type, xp, done }
 // =============================================
 //Обработчик для общих рангов
 function get_rank(xp) {
-	if (xp >= 27000) return { name: 'Легенда ', place: '1', type: 'legend' }
-	if (xp >= 22000) return { name: 'Легенда ', place: '2', type: 'legend' }
-	if (xp >= 18000) return { name: 'Легенда ', place: '3', type: 'legend' }
-
-	if (xp >= 14500) return { name: 'Алмаз ', place: '1', type: 'diamond' }
-	if (xp >= 11500) return { name: 'Алмаз ', place: '2', type: 'diamond' }
-	if (xp >= 9000) return { name: 'Алмаз ', place: '3', type: 'diamond' }
-
-	if (xp >= 7000) return { name: 'Платина ', place: '1', type: 'platinum' }
-	if (xp >= 5500) return { name: 'Платина ', place: '2', type: 'platinum' }
-	if (xp >= 4300) return { name: 'Платина ', place: '3', type: 'platinum' }
-
-	if (xp >= 3300) return { name: 'Золото ', place: '1', type: 'gold' }
-	if (xp >= 2500) return { name: 'Золото ', place: '2', type: 'gold' }
-	if (xp >= 1800) return { name: 'Золото ', place: '3', type: 'gold' }
-
-	if (xp >= 1200) return { name: 'Серебро ', place: '1', type: 'silver' }
-	if (xp >= 800) return { name: 'Серебро ', place: '2', type: 'silver' }
-	if (xp >= 500) return { name: 'Серебро ', place: '3', type: 'silver' }
-
-	if (xp >= 250) return { name: 'Бронза ', place: '1', type: 'bronze' }
-	if (xp >= 100) return { name: 'Бронза ', place: '2', type: 'bronze' }
-	if (xp < 100) return { name: 'Бронза ', place: '3', type: 'bronze' }
+let current = ranks[0];
+for(const rank of ranks){
+	if(xp>=rank.xp){
+		current = rank;
+	}
+	else break;
+}
+const max_xp = ranks[ranks.length - 1].xp;
+let stars = xp >= max_xp ? Math.floor((xp - max_xp)/exp_star):0;
+return {...current,stars}
 }
 //Функция для обновления опыта и ранга
 function update_progress() {
+	const get = get_rank(xp);
 	xp_display.textContent = xp
-	rank_display.textContent = get_rank(xp).name + ' ' + get_rank(xp).place
+	if(xp>=16500) rank_display.textContent = (get.text+" "+get.stars+" звёзд");
+	else rank_display.textContent = get.text;
 }
 
 //Сохранение в localstorage задач и опыта
