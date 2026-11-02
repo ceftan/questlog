@@ -23,6 +23,11 @@ header{
     background-color: black;
     width: 100%;
     margin: 0;
+    font-family:sans-serif;
+   display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
 }
 body{
     min-height: 100dvh;
